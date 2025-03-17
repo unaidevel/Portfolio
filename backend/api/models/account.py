@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from api.models import Transaction
+from django.db.models import Sum
 
 # class Account(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)

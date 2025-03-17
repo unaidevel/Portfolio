@@ -68,4 +68,3 @@ class GoalsView(viewsets.ModelViewSet):
 
 
 
-

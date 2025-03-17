@@ -3,8 +3,10 @@ import uuid
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.core.exceptions import ValidationError
-
 from .transaction import Transaction
+from api.notifications import send_budget_alert
+from decimal import Decimal, InvalidOperation
+
 
 class Budget(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -36,6 +38,18 @@ class Budget(models.Model):
         total_spent = transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         self.remaining_budget = self.total_amount - total_spent
         self.save()
+
+    # def check_budget_threshold(self):
+    #     try:
+    #         total_amount = Decimal(str(self.total_amount))
+    #         remaining_budget = Decimal(str(self.remaining_budget))
+    #     except InvalidOperation as e:
+    #         print(f'Error converting to decimal: {e}')
+    #         return
+    #     threshold = Decimal('0,1')
+    #     if self.remaining_budget < (self.total_amount * threshold):
+    #         send_budget_alert(self.user.email, self.name, self.remaining_budget)
+
 
 
 

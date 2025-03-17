@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from .models import Transaction, Account  
+from .models import Transaction, Account, Budget
 from django.contrib.auth.models import User
 
 
@@ -39,3 +39,8 @@ def create_user_account(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_account(sender, instance, **kwargs):
     instance.account.save()
+
+
+@receiver(post_save, sender=Budget)
+def budget_saved(sender, instance, **kwargs):
+    instance.check_budget_threshold()
