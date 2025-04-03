@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from fastapi import Depends
 from sqlmodel import Session
 from typing import Annotated
+from config import settings
 
-
-DATABASE_URL = ''
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 
