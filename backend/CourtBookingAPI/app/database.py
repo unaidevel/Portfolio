@@ -3,11 +3,13 @@ from sqlalchemy import create_engine
 from fastapi import Depends
 from sqlmodel import Session
 from typing import Annotated
-from config import settings
+from app.config import get_settings
 
-DATABASE_URL = settings.DATABASE_URL
+settings = get_settings()
 
-engine = create_engine(DATABASE_URL)
+
+
+engine = create_engine(settings.DATABASE_URL)
 
 
 def get_session():

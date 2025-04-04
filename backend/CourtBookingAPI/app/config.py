@@ -1,8 +1,4 @@
 
-"""
-ENVIRONMENT VARIABLES WAY
-"""
-
 # from dotenv import load_dotenv
 # import os
 
@@ -15,14 +11,18 @@ ENVIRONMENT VARIABLES WAY
 
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from functools import lru_cache
 
 class Settings(BaseSettings):
     SECRET_KEY: str
     DATABASE_URL: str
 
 
-    model_config = SettingsConfigDict(env_file="/portfolio_project/backend/CourtBookingAPI/.env")
+    model_config = SettingsConfigDict(env_file="/home/unai/Desktop/Portfolio/portfolio_project/backend/CourtBookingAPI/app/.env")
 
 
-settings = Settings()
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+
+

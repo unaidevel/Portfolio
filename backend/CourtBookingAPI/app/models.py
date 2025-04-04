@@ -14,9 +14,9 @@ class UserBase(SQLModel):
     full_name: str = Field(max_length=20)
     email: EmailStr = Field(unique=True)
     birth_date: date
-    is_active = bool
+    is_active: bool
 
-    booking: List['Booking'] = Relationship(back_populates='user')
+    # booking: List['Booking'] = Relationship(back_populates='user')
 
 
 class UserPassword(UserBase):
@@ -36,7 +36,7 @@ class Court(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     court_type: CourtChoices
 
-    booking: List['Booking'] = Relationship(back_populates='court')
+    # booking: List['Booking'] = Relationship(back_populates='court')
 
 
 class Booking(SQLModel, table=True):

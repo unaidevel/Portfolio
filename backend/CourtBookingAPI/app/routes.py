@@ -1,8 +1,8 @@
-from models import UserBase, UserInDb, UserPassword, UserPublic, Booking, Court
+from app.models import UserBase, UserInDb, UserPassword, UserPublic, Booking, Court
 from fastapi import APIRouter, Depends, status
-from database import SessionDep
+from app.database import SessionDep
 from typing import Annotated
-from auth import Token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
+from app.auth import Token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.exceptions import HTTPException
@@ -11,7 +11,7 @@ from fastapi.exceptions import HTTPException
 router = APIRouter()
 
 
-@router.post('/token/')
+@router.post('/token')
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
     user = authenticate_user(SessionDep, form_data.username, form_data.password)
     if not user:

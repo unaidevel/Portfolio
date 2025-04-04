@@ -1,16 +1,17 @@
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from database import SessionDep
-from models import UserBase, UserPublic, UserPassword, UserInDb 
+from app.database import SessionDep
+from app.models import UserBase, UserPublic, UserPassword, UserInDb 
 from fastapi.exceptions import HTTPException
 from fastapi import status, Depends
 from datetime import timedelta, datetime, timezone
 import jwt
 from typing import Annotated
 from jwt.exceptions import InvalidTokenError
-from config import settings
+from app.config import get_settings
 
+settings = get_settings()
 
 
 SECRET_KEY = settings.SECRET_KEY
