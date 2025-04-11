@@ -4,7 +4,7 @@ from pydantic import EmailStr, PastDate, BaseModel
 import uuid
 from typing import List
 from enum import Enum
-
+from datetime import datetime
 
 
 
@@ -13,6 +13,8 @@ class UserBase(SQLModel):
     username: str = Field(max_length=15)
     full_name: str = Field(max_length=20)
     email: EmailStr = Field(unique=True)
+    role: str = Field(default='user')
+    disabled: bool | None = None
     birth_date: date
     is_active: bool
 
@@ -50,3 +52,8 @@ class Booking(SQLModel, table=True):
     court: Court = Relationship(back_populates='booking')
 
 
+class TokenRefresh(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    token: str = Field(unique=True, index=True)
+    user_id: uuid.UUID = Field(foreign_key='UserInDb.id')
+    date_created: datetime = Field(default=datetime.now(datetime.UTC))

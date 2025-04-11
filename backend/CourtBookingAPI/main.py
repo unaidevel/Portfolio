@@ -24,4 +24,5 @@ class Hola(SQLModel):
 
 @app.post('/', response_model=Hola)
 async def holaa(hola: Hola):
-    return f'Su mensaje es {hola}'
+    print(f'Su objeto es {hola}')
+    return hola

@@ -44,6 +44,13 @@ async def read_user_me(
     return current_user
 
 
+@router.post('/courts', response_model=Court)
+async def create_court(court: Court, session: SessionDep):
+    session.add(court)
+    session.commit()
+    session.refresh(court)
+    return court
+
 
 @router.post('/booking/', response_model=Booking)
 async def create_reserve():

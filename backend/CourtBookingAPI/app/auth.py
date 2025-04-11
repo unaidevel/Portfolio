@@ -90,4 +90,32 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credentials_exception
     return user
 
+async def get_current_active_user(
+        current_user: Annotated[UserInDb, Depends(get_current_user)]
+):
+    if current_user.disabled:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Inactive user')
+    return current_user
+
+class RoleChecker:
+    def __init__(self, allowed_roles):
+        self.allowed_roles = allowed_roles
+    
+    def __call__(self, user: Annotated[UserInDb, Depends(get_current_active_user)]):
+        if UserInDb.role in self.allowed_roles:
+            return True
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                            detail="You don't have enough permissions")
+    
+
+def validate_refresh_token(token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail='Could not validate credentials',
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+    try:
+        if token in refresh_token
+
+
 
