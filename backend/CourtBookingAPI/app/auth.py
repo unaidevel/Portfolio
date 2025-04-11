@@ -2,7 +2,7 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from app.database import SessionDep
-from app.models import UserBase, UserPublic, UserPassword, UserInDb 
+from app.models import UserBase, UserPublic, UserPassword, UserInDb, TokenRefresh
 from fastapi.exceptions import HTTPException
 from fastapi import status, Depends
 from datetime import timedelta, datetime, timezone
@@ -10,7 +10,7 @@ import jwt
 from typing import Annotated
 from jwt.exceptions import InvalidTokenError
 from app.config import get_settings
-
+from sqlmodel import select
 settings = get_settings()
 
 
@@ -108,14 +108,16 @@ class RoleChecker:
                             detail="You don't have enough permissions")
     
 
-def validate_refresh_token(token: Annotated[str, Depends(oauth2_scheme)]):
+def validate_refresh_token(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, 
         detail='Could not validate credentials',
         headers={"WWW-Authenticate": "Bearer"}
     )
     try:
-        if token in refresh_token
-
+        result = session.exec(select(TokenRefresh).where(TokenRefresh.token == token)).first()
+        return result
+    except:
+        return False
 
 
