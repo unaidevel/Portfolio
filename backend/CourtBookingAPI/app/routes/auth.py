@@ -118,6 +118,6 @@ def validate_refresh_token(token: Annotated[str, Depends(oauth2_scheme)], sessio
         result = session.exec(select(TokenRefresh).where(TokenRefresh.token == token)).first()
         return result
     except:
-        return False
+        return credentials_exception
 
 

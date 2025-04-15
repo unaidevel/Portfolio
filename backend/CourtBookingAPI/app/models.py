@@ -57,3 +57,4 @@ class TokenRefresh(SQLModel, table=True):
     token: str = Field(unique=True, index=True)
     user_id: uuid.UUID = Field(foreign_key='UserInDb.id')
     date_created: datetime = Field(default=datetime.now(datetime.UTC))
+    

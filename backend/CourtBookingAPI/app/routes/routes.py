@@ -2,7 +2,7 @@ from app.models import UserBase, UserInDb, UserPassword, UserPublic, Booking, Co
 from fastapi import APIRouter, Depends, status
 from app.database import SessionDep
 from typing import Annotated
-from app.auth import Token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
+from portfolio_project.backend.CourtBookingAPI.app.routes import Token, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.exceptions import HTTPException
@@ -45,7 +45,7 @@ async def read_user_me(
 
 
 @router.post('/courts', response_model=Court)
-async def create_court(court: Court, session: SessionDep):
+async def create_court(court: Court, session: SessionDep, current_user):
     session.add(court)
     session.commit()
     session.refresh(court)
