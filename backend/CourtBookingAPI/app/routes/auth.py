@@ -48,7 +48,7 @@ def get_user(username: str, session: SessionDep) -> UserInDb | None:
 
 
 def authenticate_user(username: str, password: str, session:SessionDep):
-    user = get_user(session, username)
+    user = get_user(username=username, session=session)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):

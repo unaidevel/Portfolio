@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from app.database import engine
-
+from app.routes import routes
 
 app = FastAPI()
 
@@ -16,6 +16,7 @@ def create_db_and_tables():
 def on_startup():
     create_db_and_tables()
 
+app.include_router(routes.router)
 
 class Hola(SQLModel):
     hola: str

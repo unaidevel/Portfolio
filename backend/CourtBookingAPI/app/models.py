@@ -44,9 +44,10 @@ class Court(SQLModel, table=True):
 class Booking(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     booking_date: date
-    user_id: uuid.UUID = Field(foreign_key='User.id')
-    court_id: uuid.UUID = Field(foreign_key='Court.id')
+    user_id: uuid.UUID = Field(foreign_key='userindb.id')
+    court_id: uuid.UUID = Field(foreign_key='court.id')
 
+    
 
     user: UserBase = Relationship(back_populates='booking')
     court: Court = Relationship(back_populates='booking')
@@ -55,6 +56,6 @@ class Booking(SQLModel, table=True):
 class TokenRefresh(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     token: str = Field(unique=True, index=True)
-    user_id: uuid.UUID = Field(foreign_key='UserInDb.id')
-    date_created: datetime = Field(default=datetime.now(datetime.UTC))
+    user_id: uuid.UUID = Field(foreign_key='userindb.id')
+    date_created: datetime = Field(default=datetime.now())
     
