@@ -27,6 +27,8 @@ class UserPassword(UserBase):
 class UserInDb(UserBase, table=True):
     hashed_password: str
 
+    booking: list['Booking'] = Relationship(back_populates='user')
+
 class UserPublic(UserBase):
     pass
 
@@ -38,7 +40,7 @@ class Court(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     court_type: CourtChoices
 
-    # booking: List['Booking'] = Relationship(back_populates='court')
+    booking: List['Booking'] = Relationship(back_populates='court')
 
 
 class Booking(SQLModel, table=True):
@@ -49,7 +51,7 @@ class Booking(SQLModel, table=True):
 
     
 
-    user: UserBase = Relationship(back_populates='booking')
+    user: UserInDb = Relationship(back_populates='booking')
     court: Court = Relationship(back_populates='booking')
 
 
