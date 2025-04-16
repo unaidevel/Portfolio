@@ -11,8 +11,9 @@ from typing import Annotated
 from jwt.exceptions import InvalidTokenError
 from app.config import get_settings
 from sqlmodel import select
-settings = get_settings()
 
+
+settings = get_settings()
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = 'HS256'
@@ -43,7 +44,7 @@ def get_user(username: str, session: SessionDep) -> UserInDb | None:
         # user_dict = user.__dict__ #As i saw, if i dont have schemas, its essential to convert the pydantic to dict, and remove the password
         # user_dict.pop('hashed_password', None)
         # return user_dict
-    return None
+    return None 
 
 
 
@@ -119,5 +120,3 @@ def validate_refresh_token(token: Annotated[str, Depends(oauth2_scheme)], sessio
         return result
     except:
         return credentials_exception
-
-

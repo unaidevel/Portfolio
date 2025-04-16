@@ -8,9 +8,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.exceptions import HTTPException
 from app.models import TokenRefresh
 from sqlmodel import select
-
+from app.routes.auth import RoleChecker
+from app.routes.dependency import admin_only
 
 router = APIRouter()
+
+
 
 
 @router.post('/token')
@@ -65,7 +68,7 @@ async def read_user_me(
 
 
 @router.post('/courts', response_model=Court)
-async def create_court(court: Court, session: SessionDep, current_user):
+async def create_court(court: Court, session: SessionDep, current_user: Annotated[UserInDb, Depends(admin_only)]):
     session.add(court)
     session.commit()
     session.refresh(court)
@@ -85,9 +88,7 @@ async def create_reserve(
     return booking
 
 
-from app.routes.auth import RoleChecker
 
-admin_only = RoleChecker(allowed_roles=['admin'])
 
 @router.post('/admin-only/')
 async def admin_only_endpoint(
