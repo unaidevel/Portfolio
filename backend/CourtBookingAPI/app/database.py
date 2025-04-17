@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from fastapi import Depends
 from sqlmodel import Session
 from typing import Annotated
-from config import get_settings
+from app.config import get_settings
 
 settings = get_settings()
 
