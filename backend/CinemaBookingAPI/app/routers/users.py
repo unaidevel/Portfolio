@@ -1,18 +1,18 @@
-from app.models import UserBase, UserInDb, UserPassword, UserPublic, Booking, Court
 from fastapi import APIRouter, Depends, status
-from app.database import SessionDep
-from typing import Annotated
-from app.routes.auth import Token, oauth2_scheme, get_current_user, authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_password_hashed
-from datetime import timedelta
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.exceptions import HTTPException
-from app.models import TokenRefresh
 from sqlmodel import select
-from app.routes.auth import RoleChecker
-from app.routes.dependency import admin_only
+from typing import Annotated
+from fastapi.security import OAuth2PasswordRequestForm
+from app.database import SessionDep
+from datetime import timedelta
+from app.auths.auth import create_access_token, authenticate_user, get_password_hashed, get_current_user
+from app.auths.auth import oauth2_scheme, TokenRefresh, Token
+from app.auths.auth import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.models import UserInDb, UserPassword, UserPublic
+from fastapi.exceptions import HTTPException
+
+
 
 router = APIRouter()
-
 
 
 
@@ -65,32 +65,3 @@ async def read_user_me(
     current_user: Annotated[UserInDb, Depends(get_current_user)]
 ):
     return current_user
-
-
-@router.post('/courts', response_model=Court)
-async def create_court(court: Court, session: SessionDep, current_user: Annotated[UserInDb, Depends(admin_only)]):
-    session.add(court)
-    session.commit()
-    session.refresh(court)
-    return court
-
-
-@router.post('/booking/', response_model=Booking)
-async def create_reserve(
-    booking: Booking,
-    session: SessionDep,
-    current_user: Annotated[UserInDb, Depends(get_current_user)]
-):
-    booking.user_id = current_user.id
-    session.add(booking)
-    session.commit()
-    session.refresh(booking)
-    return booking
-
-   
-
-@router.post('/admin-only/')
-async def admin_only_endpoint(
-    current_user: Annotated[UserInDb, Depends(admin_only)]
-):
-    return {"message": "You have admin access"}

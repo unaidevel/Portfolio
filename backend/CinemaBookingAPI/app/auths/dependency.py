@@ -1,4 +1,4 @@
-from app.routes.routes import RoleChecker
+from app.auths.auth import RoleChecker
 
 
 admin_only = RoleChecker(allowed_roles=['admin'])

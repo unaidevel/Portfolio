@@ -3,11 +3,15 @@ from database import SessionDep
 from uuid import uuid4
 from datetime import date
 from passlib.context import CryptContext
-from routes.auth import pwd_context
+from app.auths.auth import pwd_context
 from sqlmodel import select
 from sqlmodel import Session
 from database import engine
 
+
+"""
+SCRIPT TO CREATE USERS WITH DIFFERENT ROLES
+"""
 
 session = Session(engine)
 
