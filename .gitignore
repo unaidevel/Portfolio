@@ -1,2 +1,6 @@
 env/
 backend/**/*.env
+backend/CinemaBookingAPI/app/config.py
+backend/CinemaBookingAPI/alembic/
+backend/CinemaBookingAPI/alembic.ini
+
