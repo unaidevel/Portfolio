@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from finances.models import Transaction, Category
+from api.models import Transaction, Category
 
 # class TransactionTests_Session_Auth(APITestCase):
 #     def setUp(self):
