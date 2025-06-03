@@ -3,4 +3,10 @@ backend/**/*.env
 backend/CinemaBookingAPI/app/config.py
 backend/CinemaBookingAPI/alembic/
 backend/CinemaBookingAPI/alembic.ini
-
+backend/CinemaBookingAPI/app/__pycache__/\
+backend/CinemaBookingAPI/docker-compose.yml
+backend/CinemaBookingAPI/start.sh
+backend/CinemaBookingAPI/wait-for-it.sh
+backend/CinemaBookingAPI/init.sql
+backend/CinemaBookingAPI/app/create_admin.py
+improvements.md
