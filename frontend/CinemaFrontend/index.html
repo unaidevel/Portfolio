@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMax - Book Your Movie Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .api-status {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            border-radius: 20px;
+            font-size: 0.9em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+        }
+
+        .section h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #4ecdc4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #b0b0b0;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+            background: rgba(26, 26, 46, 0.9);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .seat-map {
+            display: block !important;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0;
+        }
+
+        .seat {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .seat:hover {
+            background: rgba(78, 205, 196, 0.3);
+            border-color: #4ecdc4;
+        }
+
+        .seat.selected {
+            background: #4ecdc4;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+        }
+
+        .seat.occupied {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            cursor: not-allowed;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-seat {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .booking-summary {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4ecdc4;
+            border-bottom: 2px solid #4ecdc4;
+        }
+
+        .response-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #4ecdc4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 2em;
+            }
+            
+            .seat-map {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .row-label {
+            display: inline-block;
+            width: 20px;
+            text-align: right;
+            margin-right: 8px;
+            font-weight: bold;
+            color: #ff6bcb;
+            font-size: 1.1em;
+        }
+        .row-bar {
+            display: inline-block;
+            width: 10px;
+            text-align: center;
+            color: #fff;
+            font-size: 1.1em;
+            margin: 0 4px;
+        }
+        .cinema-row {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🎬 Cine Paquito</div>
+            <div class="subtitle">Your Premium Movie Booking Experience</div>
+            <div class="api-status" id="apiStatus">🔗 API Ready</div>
+            <div style="margin-top: 24px; display: flex; justify-content: center; gap: 16px;">
+                <div id="authButtons">
+                    <button class="btn" onclick="window.location.href='login.html'" style="margin-right: 10px;">Login</button>
+                    <button class="btn" onclick="window.location.href='register.html'">Register</button>
+                </div>
+                <div id="userInfo" style="display: none;">
+                    <button class="btn" onclick="window.location.href='profile.html'" style="margin-right: 10px;">Profile</button>
+                    <button class="btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M18,4L20,8H17L15,4H13L15,8H12L10,4H8L10,8H7L5,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4H18Z"/>
+                    </svg>
+                    Available movies
+                </h2>
+                <div class="movies-grid" id="moviesGrid">
+                    <!-- Movies will be loaded here -->
+                </div>
+                <button class="btn" onclick="loadMovies()">
+                    <span id="loadMoviesText">Load Movies</span>
+                </button>
+                <div class="response-area" id="moviesResponse"></div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
+                    </svg>
+                    Book Your Seats
+                </h2>
+                
+                <div class="form-group">
+                    <label for="movieSelect">Select Movie</label>
+                    <select id="movieSelect">
+                        <option value="">Choose a movie...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sessionSelect">Select Session</label>
+                    <select id="sessionSelect">
+                        <option value="">Choose a session...</option>
+                    </select>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-seat" style="background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3);"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat" style="background: #4ecdc4;"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-seat" style="background: #ff6b6b;"></div>
+                        <span>Occupied</span>
+                    </div>
+                </div>
+
+                <div class="seat-map" id="seatMap">
+                    <!-- Seats will be generated here -->
+                </div>
+
+                <div class="booking-summary">
+                    <div class="summary-item">
+                        <span>Selected Seats:</span>
+                        <span id="selectedSeats">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Price per Seat:</span>
+                        <span id="pricePerSeat">€0.00</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span id="totalPrice">€0.00</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="bookSeats()" style="width: 100%; margin-top: 20px;">
+                    <span id="bookingText">Complete Booking</span>
+                </button>
+                <div class="response-area" id="bookingResponse"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+                </svg>
+                API Configuration
+            </h2>
+            <div class="form-group">
+                <label for="apiUrl">FastAPI Base URL</label>
+                <input type="text" id="apiUrl" value="https://cinema-api.unaimunoz.dev" placeholder="Enter your API URL">
+            </div>
+            <button class="btn" onclick="testConnection()">Test API Connection</button>
+            <div class="response-area" id="connectionResponse"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedSeats = []; // Array para almacenar UUIDs de asientos seleccionados
+        let seatNameToUuidMap = {}; // Mapa de nombres de asientos a UUIDs
+        let movies = [];
+        let sessions = [];
+        let apiBaseUrl = 'https://cinema-api.unaimunoz.dev';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateApiUrl();
+            checkAuth();
+            loadMovies();
+            document.getElementById('movieSelect').addEventListener('change', onMovieChange);
+            document.getElementById('sessionSelect').addEventListener('change', onSessionChange);
+        });
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+            const authButtons = document.getElementById('authButtons');
+            const userInfo = document.getElementById('userInfo');
+
+            if (token && username) {
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userInfo.innerHTML = `
+                    <button class="btn" onclick="window.location.href='profile.html'" style="margin-right: 10px;">Profile</button>
+                    <button class="btn" onclick="logout()">Logout</button>
+                `;
+            } else {
+                authButtons.style.display = 'flex';
+                userInfo.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.reload();
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            };
+        }
+
+        function isAuthenticated() {
+            return !!localStorage.getItem('token');
+        }
+
+        function showAuthRequired() {
+            const responseDiv = document.getElementById('bookingResponse');
+            responseDiv.innerHTML = '❌ Please login to complete your booking. <a href="login.html" style="color: #4ecdc4;">Login here</a>';
+        }
+
+        function updateApiUrl() {
+            apiBaseUrl = document.getElementById('apiUrl').value;
+        }
+
+        async function loadMovies() {
+            updateApiUrl();
+            const responseDiv = document.getElementById('moviesResponse');
+            const loadBtn = document.getElementById('loadMoviesText');
+            const moviesGrid = document.getElementById('moviesGrid');
+            const movieSelect = document.getElementById('movieSelect');
+            try {
+                loadBtn.innerHTML = '<div class="loading"></div>';
+                responseDiv.innerHTML = 'Loading movies...';
+                const response = await fetch(`${apiBaseUrl}/movie`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    movies = await response.json();
+                    moviesGrid.innerHTML = '';
+                    movieSelect.innerHTML = '<option value="">Choose a movie...</option>';
+                    movies.forEach((movie, index) => {
+                        const movieCard = document.createElement('a');
+                        movieCard.href = `movie-details.html?slug=${movie.slug}`;
+                        movieCard.className = 'movie-card';
+                        movieCard.innerHTML = `
+                            <div class="movie-poster">🎬</div>
+                            <h3>${movie.title}</h3>
+                            <p>${movie.genre.charAt(0).toUpperCase() + movie.genre.slice(1)}</p>
+                            <p>${movie.duration} min</p>
+                        `;
+                        moviesGrid.appendChild(movieCard);
+                        const option = document.createElement('option');
+                        option.value = movie.id;
+                        option.textContent = movie.title;
+                        movieSelect.appendChild(option);
+                    });
+                    responseDiv.innerHTML = `✅ Loaded ${movies.length} movies successfully!`;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `❌ Failed to load movies: ${error.message}`;
+            } finally {
+                loadBtn.textContent = 'Load Movies';
+            }
+        }
+
+        async function onMovieChange() {
+            const movieId = document.getElementById('movieSelect').value;
+            const sessionSelect = document.getElementById('sessionSelect');
+            sessionSelect.innerHTML = '<option value="">Loading sessions...</option>';
+            selectedSeats = [];
+            updateBookingSummary();
+            document.getElementById('seatMap').innerHTML = '';
+            if (!movieId) {
+                sessionSelect.innerHTML = '<option value="">Choose a session...</option>';
+                return;
+            } 
+            updateApiUrl();
+            try {
+                const response = await fetch(`${apiBaseUrl}/sessions`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                if (!response.ok) throw new Error('Failed to fetch sessions');
+                const allSessions = await response.json();
+                sessions = allSessions.filter(s => s.movie_id === movieId && !s.disabled);
+                sessionSelect.innerHTML = '<option value="">Choose a session...</option>';
+                sessions.forEach(session => {
+                    const option = document.createElement('option');
+                    option.value = String(session.id);
+                    const dt = new Date(session.session_time);
+                    const date = dt.toLocaleDateString();
+                    const time = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    option.textContent = `${date} ${time}`;
+                    sessionSelect.appendChild(option);
+                });
+            } catch (e) {
+                console.error('Error loading sessions:', e);
+                sessionSelect.innerHTML = '<option value="">No sessions found</option>';
+            }
+        }
+
+        async function onSessionChange() {
+            const sessionId = document.getElementById('sessionSelect').value;
+            selectedSeats = [];
+            updateBookingSummary();
+            if (!sessionId) {
+                document.getElementById('seatMap').innerHTML = '';
+                return;
+            }
+            const formattedSessionId = String(sessionId).trim();
+            await loadSeatsForSession(formattedSessionId);
+        }
+
+        async function loadSeatsForSession(sessionId) {
+            updateApiUrl();
+            const seatMap = document.getElementById('seatMap');
+            seatMap.innerHTML = '<div class="loading"></div>';
+            try {
+                const response = await fetch(`${apiBaseUrl}/session/${sessionId}/seats`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                if (!response.ok) throw new Error(`Failed to fetch seats: ${response.status} ${response.statusText}`);
+                const seatsPerRow = await response.json();
+                console.log('Raw API response:', JSON.stringify(seatsPerRow, null, 2)); // Debug log
+                
+                seatMap.innerHTML = '';
+                seatNameToUuidMap = {}; // Reiniciar el mapa
+
+                // Crear pantalla
+                const screen = document.createElement('div');
+                screen.style.textAlign = 'center';
+                screen.style.marginBottom = '20px';
+                screen.style.padding = '10px';
+                screen.style.background = 'rgba(255, 255, 255, 0.1)';
+                screen.style.borderRadius = '5px';
+                screen.textContent = 'SCREEN';
+                seatMap.appendChild(screen);
+
+                const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
+                const seatsPerRowCount = 15;
+                rows.forEach(row => {
+                    const rowContainer = document.createElement('div');
+                    rowContainer.className = 'cinema-row';
+                    rowContainer.style.display = 'flex';
+                    rowContainer.style.alignItems = 'center';
+                    rowContainer.style.justifyContent = 'center';
+                    rowContainer.style.marginBottom = '8px';
+
+                    const rowLabel = document.createElement('span');
+                    rowLabel.className = 'row-label';
+                    rowLabel.textContent = row;
+                    rowContainer.appendChild(rowLabel);
+
+                    const leftBar = document.createElement('span');
+                    leftBar.className = 'row-bar';
+                    leftBar.textContent = '|';
+                    rowContainer.appendChild(leftBar);
+
+                    // Renderizar asientos para esta fila
+                    for (let i = 0; i < seatsPerRowCount; i++) {
+                        const seatObj = seatsPerRow[row]?.[i];
+                        const seatNumber = i + 1;
+                        const seatName = `${row}${seatNumber}`;
+                        let isReserved = false;
+                        let uuid = null;
+                        if (seatObj) {
+                            uuid = seatObj.id;
+                            isReserved = seatObj.is_reserved;
+                            // Almacenar el mapeo de nombre a UUID
+                            seatNameToUuidMap[seatName] = uuid;
+                            console.log(`Seat ${seatName} data:`, {
+                                seatObj,
+                                uuid,
+                                allProps: Object.keys(seatObj)
+                            }); // Debug log
+                        }
+
+                        const seatDiv = document.createElement('div');
+                        seatDiv.className = 'seat';
+                        seatDiv.textContent = seatNumber.toString().padStart(2, '0');
+                        seatDiv.dataset.seatName = seatName;
+                        seatDiv.dataset.uuid = uuid;
+                        seatDiv.style.margin = '0 2px';
+
+                        if (isReserved) {
+                            seatDiv.classList.add('occupied');
+                        } else {
+                            seatDiv.addEventListener('click', toggleSeat);
+                        }
+                        rowContainer.appendChild(seatDiv);
+                    }
+
+                    const rightBar = document.createElement('span');
+                    rightBar.className = 'row-bar';
+                    rightBar.textContent = '|';
+                    rowContainer.appendChild(rightBar);
+
+                    seatMap.appendChild(rowContainer);
+                });
+            } catch (e) {
+                console.error('Error loading seats:', e);
+                seatMap.innerHTML = `Failed to load seats: ${e.message}`;
+            }
+        }
+
+        function toggleSeat(event) {
+            const seatDiv = event.target;
+            const seatName = seatDiv.dataset.seatName;
+            const seatUuid = seatDiv.dataset.uuid;
+            
+            if (!seatName || !seatUuid) return;
+            
+            console.log('Toggling seat:', { 
+                seatName, 
+                seatUuid,
+                seatData: seatNameToUuidMap[seatName]
+            }); // Debug log
+            
+            if (seatDiv.classList.contains('selected')) {
+                seatDiv.classList.remove('selected');
+                selectedSeats = selectedSeats.filter(uuid => uuid !== seatUuid);
+            } else {
+                seatDiv.classList.add('selected');
+                selectedSeats.push(seatUuid);
+            }
+            console.log('Current selected seats:', selectedSeats); // Debug log
+            updateBookingSummary();
+        }
+
+        function updateBookingSummary() {
+            const selectedSeatsElement = document.getElementById('selectedSeats');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const pricePerSeatElement = document.getElementById('pricePerSeat');
+            const sessionId = document.getElementById('sessionSelect').value;
+            
+            // Obtener nombres de asientos a partir de los UUIDs seleccionados
+            const selectedSeatNames = [];
+            for (const seatName in seatNameToUuidMap) {
+                if (selectedSeats.includes(seatNameToUuidMap[seatName])) {
+                    selectedSeatNames.push(seatName);
+                }
+            }
+            
+            let price = 0;
+            if (sessionId) {
+                const session = sessions.find(s => s.id === sessionId);
+                price = session ? session.price : 0;
+                pricePerSeatElement.textContent = `€${price.toFixed(2)}`;
+            } else {
+                pricePerSeatElement.textContent = '€0.00';
+            }
+            
+            if (selectedSeatNames.length === 0) {
+                selectedSeatsElement.textContent = 'None';
+                totalPriceElement.textContent = '€0.00';
+            } else {
+                selectedSeatsElement.textContent = selectedSeatNames.join(', ');
+                totalPriceElement.textContent = `€${(selectedSeatNames.length * price).toFixed(2)}`;
+            }
+        }
+
+        async function bookSeats() {
+            if (!isAuthenticated()) {
+                showAuthRequired();
+                return;
+            }
+
+            const sessionId = document.getElementById('sessionSelect').value;
+            if (!sessionId) {
+                alert('Please select a session!');
+                return;
+            }
+            if (selectedSeats.length === 0) {
+                alert('Please select at least one seat!');
+                return;
+            }
+
+            updateApiUrl();
+            const responseDiv = document.getElementById('bookingResponse');
+            const bookBtn = document.getElementById('bookingText');
+            try {
+                bookBtn.innerHTML = '<div class="loading"></div>';
+                responseDiv.innerHTML = 'Processing booking...';
+
+                // Ensure we're sending the correct data structure
+                const bookingData = {
+                    session_id: sessionId,
+                    seat_ids: selectedSeats.filter(id => id) // Filter out any null/undefined values
+                };
+
+                console.log('Sending booking data:', JSON.stringify(bookingData, null, 2)); // Debug log
+
+                const response = await fetch(`${apiBaseUrl}/session/${sessionId}/booking`, {
+                    method: 'POST',
+                    headers: {
+                        ...getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                const data = await response.json();
+                console.log('Booking response:', JSON.stringify(data, null, 2)); // Debug log
+
+                if (response.ok) {
+                    // Get the selected movie and session info
+                    const movieSelect = document.getElementById('movieSelect');
+                    const sessionSelect = document.getElementById('sessionSelect');
+                    const selectedMovie = movies.find(m => m.id === data.movie_id);
+                    const selectedSession = sessions.find(s => s.id === data.session_id);
+                    
+                    // Format the date
+                    const bookingDate = new Date(data.booking_date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    // Get the selected seat names
+                    const selectedSeatNames = Object.entries(seatNameToUuidMap)
+                        .filter(([_, uuid]) => selectedSeats.includes(uuid))
+                        .map(([name]) => name);
+
+                    // Get the time from the selected session
+                    console.log('Selected session:', selectedSession); // Debug log
+                    const dt = new Date(selectedSession?.session_time);
+                    const sessionTime = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || 'N/A';
+
+                    // Create a user-friendly success message
+                    const successMessage = `
+                        <div style="text-align: center; padding: 10px; max-height: none; overflow: visible;">
+                            <h2 style="color: #4CAF50; margin: 0 0 10px 0; font-size: 1.2em;">🎉 Booking Successful!</h2>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 5px 0;">
+                                <p style="margin: 3px 0; font-size: 0.9em;"><strong>Movie:</strong> ${selectedMovie?.title || 'N/A'}</p>
+                                <p style="margin: 3px 0; font-size: 0.9em;"><strong>Date:</strong> ${bookingDate}</p>
+                                <p style="margin: 3px 0; font-size: 0.9em;"><strong>Time:</strong> ${sessionTime}</p>
+                                <p style="margin: 3px 0; font-size: 0.9em;"><strong>Seats:</strong> ${selectedSeatNames.join(', ')}</p>
+                                <p style="margin: 3px 0; font-size: 0.9em;"><strong>Booking ID:</strong> ${data.id}</p>
+                            </div>
+                            <p style="margin: 5px 0; font-size: 0.8em; color: #888;">Thank you for your booking. Enjoy the movie!</p>
+                        </div>
+                    `;
+                    
+                    responseDiv.innerHTML = successMessage;
+                    responseDiv.style.display = 'block';
+                    responseDiv.style.maxHeight = 'none';
+                    responseDiv.style.overflow = 'visible';
+                    selectedSeats = [];
+                    updateBookingSummary();
+                    await loadSeatsForSession(sessionId);
+                } else {
+                    let errorMessage = 'Booking failed';
+                    if (data.detail) {
+                        if (typeof data.detail === 'string') {
+                            errorMessage = data.detail;
+                        } else if (Array.isArray(data.detail)) {
+                            errorMessage = data.detail.map(err => err.msg || err.message).join(', ');
+                        } else if (typeof data.detail === 'object') {
+                            errorMessage = Object.values(data.detail).join(', ');
+                        }
+                    }
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Booking error:', error);
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `❌ ${error.message}`;
+            } finally {
+                bookBtn.textContent = 'Complete Booking';
+            }
+        }
+
+        async function testConnection() {
+            updateApiUrl();
+            const responseDiv = document.getElementById('connectionResponse');
+            const statusDiv = document.getElementById('apiStatus');
+            
+            try {
+                responseDiv.innerHTML = '<div class="loading"></div> Testing connection...';
+                const response = await fetch(`${apiBaseUrl}/movie`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    responseDiv.innerHTML = `✅ Connection successful!\nAPI is responding with ${data.length} movies available.`;
+                    statusDiv.innerHTML = '🟢 API Connected';
+                    statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+                    statusDiv.style.borderColor = '#4caf50';
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+                statusDiv.innerHTML = '🔴 API Disconnected';
+                statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+                statusDiv.style.borderColor = '#f44336';
+            }
+        }
+
+        function updateAuthUI() {
+            const authDiv = document.getElementById('authDiv');
+            const user = getCurrentUser();
+            if (user) {
+                authDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.1); padding: 8px 15px; border-radius: 20px;">
+                        <span style="color: #4CAF50;">👋</span>
+                        <span style="color: #fff; font-size: 0.9em;">Welcome, <span style="color: #4CAF50; font-weight: 500;">${user.username}</span></span>
+                        <button onclick="logout()" style="
+                            background: rgba(255, 255, 255, 0.1);
+                            border: none;
+                            color: #fff;
+                            padding: 5px 10px;
+                            border-radius: 15px;
+                            cursor: pointer;
+                            font-size: 0.8em;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'"
+                          onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">Logout</button>
+                    </div>
+                `;
+            } else {
+                authDiv.innerHTML = `
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="window.location.href='login.html'" style="
+                            background: rgba(255, 255, 255, 0.1);
+                            border: none;
+                            color: #fff;
+                            padding: 8px 15px;
+                            border-radius: 20px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'"
+                          onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">Login</button>
+                        <button onclick="window.location.href='register.html'" style="
+                            background: #4CAF50;
+                            border: none;
+                            color: #fff;
+                            padding: 8px 15px;
+                            border-radius: 20px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.background='#45a049'"
+                          onmouseout="this.style.background='#4CAF50'">Register</button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

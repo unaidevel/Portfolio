@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Cinema</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            background: none;
+            border: 2px solid #4ecdc4;
+            color: #4ecdc4;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: #4ecdc4;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-button.logout {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .nav-button.logout:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panels-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 400px;
+        }
+
+        .user-details {
+            display: grid;
+            gap: 15px;
+        }
+
+        .user-detail {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .user-detail strong {
+            color: #4ecdc4;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .user-detail span {
+            font-size: 1.1em;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .user-detail input {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 4px;
+            color: white;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+
+        .user-detail input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 5px rgba(78, 205, 196, 0.3);
+        }
+
+        .edit-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #4ecdc4;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-button:hover {
+            color: #45b7d1;
+            transform: scale(1.1);
+        }
+
+        .save-button {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .save-button:hover {
+            background: #45b7d1;
+            transform: translateY(-2px);
+        }
+
+        .save-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: #4ecdc4;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .booking-history {
+            display: grid;
+            gap: 20px;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .booking-card h3 {
+            color: #4ecdc4;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .booking-details {
+            display: grid;
+            gap: 10px;
+        }
+
+        .booking-details p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .booking-details strong {
+            color: #4ecdc4;
+        }
+
+        .seats-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .seat-tag {
+            background: rgba(78, 205, 196, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .panels-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sort-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .sort-button {
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transition: background-color 0.3s;
+            font-size: 0.9em;
+        }
+
+        .sort-button:hover {
+            background-color: #45b7af;
+        }
+
+        .sort-button i {
+            font-size: 12px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"> Cine Unai</div>
+            <div class="subtitle">Your Profile & Booking History</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-button">Home</a>
+                <button onclick="logout()" class="nav-button logout">Logout</button>
+            </div>
+        </header>
+
+        <div class="section">
+            <div class="panels-container">
+                <div class="panel">
+                    <h2>User Profile</h2>
+                    <div id="userInfo" class="user-details">
+                        <div class="user-detail">
+                            <strong>Full Name</strong>
+                            <span id="fullNameDisplay">Loading...</span>
+                            <input type="text" id="fullNameInput" style="display: none;">
+                            <button class="edit-button" onclick="toggleEdit('fullName')">✏️</button>
+                        </div>
+                        <div class="user-detail">
+                            <strong>Birth Date</strong>
+                            <span id="birthDateDisplay">Loading...</span>
+                            <input type="date" id="birthDateInput" style="display: none;">
+                            <button class="edit-button" onclick="toggleEdit('birthDate')">✏️</button>
+                        </div>
+                        <div class="user-detail">
+                            <strong>Email</strong>
+                            <span id="emailDisplay">Loading...</span>
+                            <input type="email" id="emailInput" style="display: none;">
+                            <button class="edit-button" onclick="toggleEdit('email')">✏️</button>
+                        </div>
+                        <button id="saveButton" class="save-button" style="display: none;" onclick="saveChanges()">Save Changes</button>
+                        <div id="messageBox"></div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-header">
+                        <h2>Booking History</h2>
+                        <div class="sort-buttons">
+                            <button onclick="sortBookings('asc')" class="sort-button">
+                                <i class="fas fa-sort-up"></i> Oldest
+                            </button>
+                            <button onclick="sortBookings('desc')" class="sort-button">
+                                <i class="fas fa-sort-down"></i> Newest
+                            </button>
+                        </div>
+                    </div>
+                    <div id="bookingHistory"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'https://cinema-api.unaimunoz.dev';
+
+        function getCurrentUser() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+            if (!token || !username) return null;
+            return { token, username };
+        }
+
+        function checkAuth() {
+            const user = getCurrentUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
+        }
+
+        let originalData = {};
+        let currentBookings = [];
+
+        function toggleEdit(field) {
+            const display = document.getElementById(`${field}Display`);
+            const input = document.getElementById(`${field}Input`);
+            const saveButton = document.getElementById('saveButton');
+            const messageBox = document.getElementById('messageBox');
+            
+            // Clear any previous error messages
+            messageBox.innerHTML = '';
+            
+            if (display.style.display !== 'none') {
+                display.style.display = 'none';
+                input.style.display = 'block';
+                input.value = display.textContent;
+                saveButton.style.display = 'block';
+            } else {
+                display.style.display = 'block';
+                input.style.display = 'none';
+                saveButton.style.display = 'none';
+                input.value = originalData[field];
+            }
+        }
+
+        async function saveChanges() {
+            const saveButton = document.getElementById('saveButton');
+            const messageBox = document.getElementById('messageBox');
+            const fullNameInput = document.getElementById('fullNameInput');
+            const birthDateInput = document.getElementById('birthDateInput');
+            const emailInput = document.getElementById('emailInput');
+            
+            saveButton.disabled = true;
+            messageBox.innerHTML = '';
+
+            // Create update data object with only the fields that are being edited
+            const updatedData = {};
+            
+            // Only include fields that are currently being edited (visible inputs)
+            if (fullNameInput.style.display !== 'none') {
+                if (!fullNameInput.value.trim()) {
+                    messageBox.innerHTML = '<div class="error-message">Full name cannot be empty</div>';
+                    saveButton.disabled = false;
+                    return;
+                }
+                updatedData.full_name = fullNameInput.value.trim();
+            }
+            
+            if (birthDateInput.style.display !== 'none') {
+                if (!birthDateInput.value) {
+                    messageBox.innerHTML = '<div class="error-message">Birth date cannot be empty</div>';
+                    saveButton.disabled = false;
+                    return;
+                }
+                updatedData.birth_date = birthDateInput.value;
+            }
+            
+            if (emailInput.style.display !== 'none') {
+                if (!emailInput.value.trim()) {
+                    messageBox.innerHTML = '<div class="error-message">Email cannot be empty</div>';
+                    saveButton.disabled = false;
+                    return;
+                }
+                if (!isValidEmail(emailInput.value)) {
+                    messageBox.innerHTML = '<div class="error-message">Please enter a valid email address</div>';
+                    saveButton.disabled = false;
+                    return;
+                }
+                updatedData.email = emailInput.value.trim();
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${apiUrl}/user/me`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData);
+                    if (errorData.detail) {
+                        throw new Error(errorData.detail);
+                    } else if (typeof errorData === 'object') {
+                        // Handle validation errors
+                        const errorMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(', ');
+                        throw new Error(errorMessages);
+                    } else {
+                        throw new Error(`Failed to update profile: ${response.status}`);
+                    }
+                }
+
+                const updatedUser = await response.json();
+                
+                // Update only the fields that were changed
+                if (updatedData.full_name !== undefined) {
+                    document.getElementById('fullNameDisplay').textContent = updatedUser.full_name;
+                    originalData.fullName = updatedUser.full_name;
+                }
+                if (updatedData.birth_date !== undefined) {
+                    document.getElementById('birthDateDisplay').textContent = new Date(updatedUser.birth_date).toLocaleDateString();
+                    originalData.birthDate = updatedUser.birth_date;
+                }
+                if (updatedData.email !== undefined) {
+                    document.getElementById('emailDisplay').textContent = updatedUser.email;
+                    originalData.email = updatedUser.email;
+                }
+
+                // Hide inputs and show displays for edited fields
+                if (fullNameInput.style.display !== 'none') {
+                    fullNameInput.style.display = 'none';
+                    document.getElementById('fullNameDisplay').style.display = 'block';
+                }
+                if (birthDateInput.style.display !== 'none') {
+                    birthDateInput.style.display = 'none';
+                    document.getElementById('birthDateDisplay').style.display = 'block';
+                }
+                if (emailInput.style.display !== 'none') {
+                    emailInput.style.display = 'none';
+                    document.getElementById('emailDisplay').style.display = 'block';
+                }
+
+                // Hide save button if no fields are being edited
+                if (fullNameInput.style.display === 'none' && 
+                    birthDateInput.style.display === 'none' && 
+                    emailInput.style.display === 'none') {
+                    saveButton.style.display = 'none';
+                }
+
+                // Show success message
+                messageBox.innerHTML = '<div class="success-message">Profile updated successfully!</div>';
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                messageBox.innerHTML = `<div class="error-message">${error.message}</div>`;
+            } finally {
+                saveButton.disabled = false;
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        async function loadUserInfo() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+
+                const response = await fetch(`${apiUrl}/user/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('username');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const errorData = await response.json();
+                    if (errorData.detail) {
+                        throw new Error(errorData.detail);
+                    } else if (typeof errorData === 'object') {
+                        const errorMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(', ');
+                        throw new Error(errorMessages);
+                    } else {
+                        throw new Error(`Failed to load user information: ${response.status}`);
+                    }
+                }
+
+                const userData = await response.json();
+                originalData = {
+                    fullName: userData.full_name,
+                    birthDate: userData.birth_date,
+                    email: userData.email
+                };
+
+                document.getElementById('fullNameDisplay').textContent = userData.full_name;
+                document.getElementById('birthDateDisplay').textContent = new Date(userData.birth_date).toLocaleDateString();
+                document.getElementById('emailDisplay').textContent = userData.email;
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                document.getElementById('userInfo').innerHTML = `
+                    <div class="error-message">
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function loadBookingHistory() {
+            const historyDiv = document.getElementById('bookingHistory');
+            historyDiv.innerHTML = `
+                <div class="loading-spinner"></div>
+            `;
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+
+                const response = await fetch(`${apiUrl}/user/booking/history`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('username');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    const errorData = await response.json();
+                    if (errorData.detail) {
+                        throw new Error(errorData.detail);
+                    } else if (typeof errorData === 'object') {
+                        const errorMessages = Object.entries(errorData)
+                            .map(([field, message]) => `${field}: ${message}`)
+                            .join(', ');
+                        throw new Error(errorMessages);
+                    } else {
+                        throw new Error(`Failed to load booking history: ${response.status}`);
+                    }
+                }
+
+                currentBookings = await response.json();
+                console.log('Booking history response:', currentBookings);
+                
+                // Fetch seat numbers and movie titles for each booking
+                for (let booking of currentBookings) {
+                    try {
+                        // Fetch seat numbers
+                        const seatResponse = await fetch(`${apiUrl}/user/bookings/${booking.id}`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (seatResponse.ok) {
+                            const seatData = await seatResponse.json();
+                            if (seatData.seats && Array.isArray(seatData.seats)) {
+                                booking.seat_numbers = seatData.seats.map(seat => seat.seat_number).join(', ');
+                            } else {
+                                booking.seat_numbers = 'N/A';
+                            }
+                        }
+
+                        // Fetch movie title
+                        const movieResponse = await fetch(`${apiUrl}/movie/session_id/${booking.session_id}`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (movieResponse.ok) {
+                            const movieData = await movieResponse.json();
+                            booking.movie_title = movieData.title || 'Unknown Movie';
+                        } else {
+                            booking.movie_title = 'Unknown Movie';
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching data for booking ${booking.id}:`, error);
+                        booking.seat_numbers = 'N/A';
+                        booking.movie_title = 'Unknown Movie';
+                    }
+                }
+                
+                displayBookings(currentBookings);
+            } catch (error) {
+                console.error('Error loading booking history:', error);
+                historyDiv.innerHTML = `
+                    <div class="error-message">
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function displayBookings(bookings) {
+            const historyDiv = document.getElementById('bookingHistory');
+
+            if (!Array.isArray(bookings) || bookings.length === 0) {
+                historyDiv.innerHTML = `
+                    <div class="no-bookings">
+                        <h3>No bookings found</h3>
+                        <p>You haven't made any bookings yet.</p>
+                        <a href="index.html" style="color: #4ecdc4;">Book your first movie</a>
+                    </div>
+                `;
+                return;
+            }
+
+            historyDiv.innerHTML = bookings.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-details">
+                        <p><strong>Booking ID:</strong> ${booking.id || 'N/A'}</p>
+                        <p><strong>Movie:</strong> ${booking.movie_title || 'Unknown Movie'}</p>
+                        <p><strong>Booking Date:</strong> ${booking.booking_date ? new Date(booking.booking_date).toLocaleDateString() : 'N/A'}</p>
+                        <p><strong>Seat Numbers:</strong> ${booking.seat_numbers || 'N/A'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function sortBookings(order) {
+            if (!Array.isArray(currentBookings)) return;
+
+            const sortedBookings = [...currentBookings].sort((a, b) => {
+                const dateA = new Date(a.booking_date);
+                const dateB = new Date(b.booking_date);
+                return order === 'asc' ? dateA - dateB : dateB - dateA;
+            });
+
+            displayBookings(sortedBookings);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadUserInfo();
+            loadBookingHistory();
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMax - Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            opacity: 0.85;
+            margin-top: 20px;
+            margin-bottom: 22px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #b0b0b0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+            background: rgba(26, 26, 46, 0.9);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-container {
+            position: relative;
+            margin: 18px 0 8px 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #ff6b6b);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .response-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #4ecdc4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #b0b0b0;
+        }
+
+        .register-link a {
+            color: #4ecdc4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🎬 Cine Unai</div>
+            <div class="subtitle">Create Your Account</div>
+        </header>
+
+        <div class="section">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Choose a username">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="birthDate">Birth Date</label>
+                <input type="date" id="birthDate" style="font-size: 1em; padding: 12px 15px;">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Choose a password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password">
+            </div>
+
+            <button class="btn" onclick="register()">
+                <span id="registerText">Register</span>
+            </button>
+
+            <div id="registerResponse" class="response-area" style="display: none;"></div>
+            <div id="registerSuccess" style="display:none; color:#4ecdc4; text-align:center; font-size:0.95em; margin-top:10px;">Registration successful! Redirecting to login...</div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="register-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let apiBaseUrl = 'https://cinema-api.unaimunoz.dev';
+        const totalFields = 6; // Total number of required fields
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password) {
+            // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
+            const hasMinLength = password.length >= 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            // Debug password validation
+            console.log('Password validation:', {
+                password,
+                hasMinLength,
+                hasUpperCase,
+                hasLowerCase,
+                hasNumber
+            });
+            
+            return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+        }
+
+        function updateProgress() {
+            const fields = [
+                document.getElementById('fullName'),
+                document.getElementById('username'),
+                document.getElementById('email'),
+                document.getElementById('birthDate'),
+                document.getElementById('password'),
+                document.getElementById('confirmPassword')
+            ];
+
+            const filledFields = fields.filter(field => field.value.trim() !== '').length;
+            const progress = (filledFields / totalFields) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Add input event listeners to all fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = [
+                'fullName',
+                'username',
+                'email',
+                'birthDate',
+                'password',
+                'confirmPassword'
+            ];
+
+            fields.forEach(fieldId => {
+                document.getElementById(fieldId).addEventListener('input', updateProgress);
+            });
+        });
+
+        async function register() {
+            const fullName = document.getElementById('fullName').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const responseDiv = document.getElementById('registerResponse');
+            const registerBtn = document.getElementById('registerText');
+
+            // Clear previous messages
+            responseDiv.style.display = 'none';
+            responseDiv.innerHTML = '';
+
+            // Basic validation
+            if (!fullName || !username || !email || !birthDate || !password || !confirmPassword) {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = '❌ Please fill in all fields';
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = '❌ Please enter a valid email address';
+                return;
+            }
+
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation) {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = '❌ Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = '❌ Passwords do not match';
+                return;
+            }
+
+            try {
+                registerBtn.innerHTML = '<div class="loading"></div>';
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = 'Creating account...';
+
+                const userData = {
+                    full_name: fullName,
+                    username,
+                    email,
+                    birth_date: birthDate,
+                    password
+                };
+
+                console.log('Sending registration request with data:', {
+                    ...userData,
+                    password: '********' // Hide password in logs
+                });
+
+                const response = await fetch(`${apiBaseUrl}/user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+                console.log('Registration response:', data);
+
+                if (response.ok) {
+                    document.getElementById('registerSuccess').style.display = 'block';
+                    responseDiv.style.display = 'none';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.detail || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `❌ ${error.message}`;
+            } finally {
+                registerBtn.textContent = 'Register';
+            }
+        }
+    </script>
+</body>
+</html> 

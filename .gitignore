@@ -10,3 +10,7 @@ backend/CinemaBookingAPI/wait-for-it.sh
 backend/CinemaBookingAPI/init.sql
 backend/CinemaBookingAPI/app/create_admin.py
 improvements.md
+backend/CinemaBookingAPI/.env
+backend/api/.env
+__pycache__/
+*pyc
